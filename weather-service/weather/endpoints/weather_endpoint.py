@@ -138,6 +138,7 @@ def sync_cover(country, city):
                 except:
                     unknown_cities.append(city)
             data = {'unknown-cities':unknown_cities, 'country-cities':cities, 'cities-to-sync':cities_to_sync}
+            data['country'] = country_code
             return service_response(200, 'Weather sync done.', data)
         else:
             return service_response(204, 'Weather not synched', 'It is not yet time to sync weather. country-time:{0}'.format(country_time))
