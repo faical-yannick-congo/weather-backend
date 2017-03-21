@@ -126,11 +126,19 @@ def sync_cover(country, city):
                         for hour, val in predictions.items():
                             filterer = "{0} {1}".format(next_day, hour)
                             if pred["dt_txt"] == filterer:
+                                climate = 'climate'
+                                humid = 'humidity'
+                                clim_content = ', '.join([w["description"] for w in pred["weather"]])
+                                if language not in ['en', 'unknown']:
+                                    translator = Translator(to_lang=language)
+                                    climate = translator.translate(climate)
+                                    humid = translator.translate(humid)
+                                    clim_content = translator.translate(clim_content)
                                 # Use the language here later to translate directly the news.
-                                predictions[hour]['climate'] = ', '.join([w["description"] for w in pred["weather"]])
-                                predictions[hour]['humidity'] = "{0}%".format(pred["main"]["humidity"])
-                                predictions[hour]['temp-min'] = "{0}C".format(pytemperature.k2c(pred["main"]["temp_min"]))
-                                predictions[hour]['temp-max'] = "{0}C".format(pytemperature.k2c(pred["main"]["temp_max"]))
+                                predictions[hour][climate] = clim_content
+                                predictions[hour][humid] = "{0}%".format(pred["main"]["humidity"])
+                                predictions[hour]['temp-min'] = "{0}C".format(str(pytemperature.k2c(pred["main"]["temp_min"])).split('.')[0])
+                                predictions[hour]['temp-max'] = "{0}C".format(str(pytemperature.k2c(pred["main"]["temp_max"])).split('.')[0])
                                 break
                     _weather.predictions = predictions
                     _weather.save()

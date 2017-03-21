@@ -11,7 +11,7 @@ class Weather(db.Document):
     country = db.StringField(required=True)
     city = db.StringField(required=True)
     possible_status = ["pulled", "pushing", "pushed"]
-    status = db.ListField(db.StringField(default="pulled", choices=possible_status))
+    status = db.StringField(default="pulled", choices=possible_status)
 
     def save(self, *args, **kwargs):
         self.updated_at = str(datetime.datetime.utcnow())
