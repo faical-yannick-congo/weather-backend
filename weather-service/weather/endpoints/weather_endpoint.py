@@ -125,6 +125,8 @@ def sync_cover(country, city):
                         for hour, val in predictions.items():
                             filterer = "{0} {1}".format(next_day, hour)
                             if pred["dt_txt"] == filterer:
+                                print(pred["weather"])
+                                print(pred["weather"]["description"])
                                 predictions[hour]['climate'] = pred["weather"]["description"]
                                 predictions[hour]['humidity'] = "{0}%".format(pred["main"]["humidity"])
                                 predictions[hour]['temp-min'] = "{0}C".format(pytemperature.k2c(pred["main"]["temp_min"]))
