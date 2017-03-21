@@ -4,7 +4,7 @@ from flask.ext.api import status
 import flask as fk
 
 from weatherdb.common import crossdomain
-from weather import app, SERVICE_URL, service_response, get_weather, get_one_number, get_cities
+from weather import app, SERVICE_URL, service_response, get_weather, get_one_number, get_cities, menu
 from weatherdb.common.models import Weather
 from time import gmtime, strftime
 
@@ -24,6 +24,14 @@ from geopy import geocoders
 from tzwhere import tzwhere
 from pytz import timezone
 import pytemperature
+
+@app.route(SERVICE_URL + '/menu', methods=['GET','POST','PUT','UPDATE','DELETE'])
+@crossdomain(fk=fk, app=app, origin='*')
+def service_menu():
+    if fk.request.method == 'GET':
+        return service_response(200, 'Service Menu', menu())
+    else:
+        return service_response(405, 'Method not allowed', 'This endpoint supports only a GET method.')
 
 @app.route(SERVICE_URL + '/history/<country>/<city>', methods=['GET','POST','PUT','UPDATE','DELETE'])
 @crossdomain(fk=fk, app=app, origin='*')
@@ -106,7 +114,7 @@ def sync_cover(country, city):
             ignore, language = get_cities(country)
             cities = [city]
 
-        if country_hour == 15: # We push the sync
+        if country_hour == 16: # We push the sync
             cities_to_sync = []
             for city in cities:
                 check_weather = Weather.objects(country=country, city=city, day=next_day).first()
