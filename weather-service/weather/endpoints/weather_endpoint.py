@@ -123,7 +123,7 @@ def sync_cover(country):
                         predictions = {'6:00:00':{}, '9:00:00':{}, '12:00:00':{}, '15:00:00':{}, '18:00:00':{}, '21:00:00':{}, '00:00:00':{}}
 
                         for pred in pred_weather['list']:
-                            for hour, val in enumerate(predictions)
+                            for hour, val in enumerate(predictions):
                                 filterer = "{0} {1}".format(next_day, hour)
                                 if pred["dt_txt"] == filterer:
                                     predictions[hour]['climate'] = pred["weather"]["description"]
