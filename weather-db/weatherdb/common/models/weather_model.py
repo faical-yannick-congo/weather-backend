@@ -20,7 +20,7 @@ class Weather(db.Document):
     def info(self):
         data = {'updated-at':self.updated_at, 'id':str(self.id),
         'created_at':self.created_at, 'predictions':self.predictions, 'day':self.day,
-        'city':self.city, 'country':self.country, 'status':self.status}
+        'city':self.city, 'country':self.country, 'status':self.schedule}
         return data
 
     def to_json(self):
