@@ -11,7 +11,7 @@ class Weather(db.Document):
     country = db.StringField(required=True)
     city = db.StringField(required=True)
     possible_status = ["pulled", "pushing", "pushed"]
-    schedule = db.ListField(db.StringField(default="pulled", choices=possible_status))
+    status = db.ListField(db.StringField(default="pulled", choices=possible_status))
 
     def save(self, *args, **kwargs):
         self.updated_at = str(datetime.datetime.utcnow())
@@ -20,7 +20,7 @@ class Weather(db.Document):
     def info(self):
         data = {'updated-at':self.updated_at, 'id':str(self.id),
         'created_at':self.created_at, 'predictions':self.predictions, 'day':self.day,
-        'city':self.city, 'country':self.country, 'status':self.schedule}
+        'city':self.city, 'country':self.country, 'status':self.status}
         return data
 
     def to_json(self):
