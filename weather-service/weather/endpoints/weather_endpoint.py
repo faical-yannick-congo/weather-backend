@@ -117,26 +117,26 @@ def sync_cover(country, city):
             unknown_cities = []
             for city in cities_to_sync:
                 pred_weather = get_weather(city, country_code)
-                try:
-                    if pred_weather['city']['name'] == city:
-                        _weather = Weather(created_at=str(datetime.datetime.utcnow()), country=country, city=city, day=next_day)
-                        predictions = {'6:00:00':{}, '9:00:00':{}, '12:00:00':{}, '15:00:00':{}, '18:00:00':{}, '21:00:00':{}, '00:00:00':{}}
+                # try:
+                if pred_weather['city']['name'] == city:
+                    _weather = Weather(created_at=str(datetime.datetime.utcnow()), country=country, city=city, day=next_day)
+                    predictions = {'6:00:00':{}, '9:00:00':{}, '12:00:00':{}, '15:00:00':{}, '18:00:00':{}, '21:00:00':{}, '00:00:00':{}}
 
-                        for pred in pred_weather['list']:
-                            for hour, val in enumerate(predictions):
-                                filterer = "{0} {1}".format(next_day, hour)
-                                if pred["dt_txt"] == filterer:
-                                    predictions[hour]['climate'] = pred["weather"]["description"]
-                                    predictions[hour]['humidity'] = "{0}%".format(pred["main"]["humidity"])
-                                    predictions[hour]['temp-min'] = "{0}C".format(pytemperature.k2c(pred["main"]["temp_min"]))
-                                    predictions[hour]['temp-max'] = "{0}C".format(pytemperature.k2c(pred["main"]["temp_max"]))
-                                    break
-                        _weather.predictions = predictions
-                        _weather.save()
-                    else:
-                        unknown_cities.append(city)
-                except:
+                    for pred in pred_weather['list']:
+                        for hour, val in enumerate(predictions):
+                            filterer = "{0} {1}".format(next_day, hour)
+                            if pred["dt_txt"] == filterer:
+                                predictions[hour]['climate'] = pred["weather"]["description"]
+                                predictions[hour]['humidity'] = "{0}%".format(pred["main"]["humidity"])
+                                predictions[hour]['temp-min'] = "{0}C".format(pytemperature.k2c(pred["main"]["temp_min"]))
+                                predictions[hour]['temp-max'] = "{0}C".format(pytemperature.k2c(pred["main"]["temp_max"]))
+                                break
+                    _weather.predictions = predictions
+                    _weather.save()
+                else:
                     unknown_cities.append(city)
+                # except:
+                #     unknown_cities.append(city)
             data = {'unknown-cities':unknown_cities, 'country-cities':cities, 'cities-to-sync':cities_to_sync}
             data['country'] = country_code
             return service_response(200, 'Weather sync done.', data)
