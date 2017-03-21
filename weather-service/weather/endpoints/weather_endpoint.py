@@ -114,7 +114,7 @@ def sync_cover(country, city):
             ignore, language = get_cities(country)
             cities = [city]
 
-        if country_hour == 17: # We push the sync
+        if country_hour == 21: # We push the sync
             cities_to_sync = []
             for city in cities:
                 check_weather = Weather.objects(country=country, city=city, day=next_day).first()
@@ -176,7 +176,6 @@ def weather_pushing_country(country, city):
         timeZoneObj = timezone(timeZoneStr)
         now_time = datetime.datetime.now(timeZoneObj)
         day = str(now_time).split(" ")[0]
-        day = "2017-03-22"
 
         weather_pulled = Weather.objects(city=city, country=country, status='pulled', day=day).first()
 
