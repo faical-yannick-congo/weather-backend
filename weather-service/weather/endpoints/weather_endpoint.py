@@ -108,7 +108,7 @@ def sync_cover(country, city):
         if country_hour == 13: # We push the sync
             cities_to_sync = []
             for city in cities:
-                check_weather = Weather(country=country, city=city, day=next_day).first()
+                check_weather = Weather.objects(country=country, city=city, day=next_day).first()
                 if check_weather is None:
                     cities_to_sync.append(city)
             if len(cities_to_sync) == 0:
@@ -119,7 +119,7 @@ def sync_cover(country, city):
                 pred_weather = get_weather(city, country_code)
                 try:
                     if pred_weather['city']['name'] == city:
-                        _weather = Weathear(created_at=str(datetime.datetime.utcnow()), country=country, city=city, day=next_day)
+                        _weather = Weather(created_at=str(datetime.datetime.utcnow()), country=country, city=city, day=next_day)
                         predictions = {'6:00:00':{}, '9:00:00':{}, '12:00:00':{}, '15:00:00':{}, '18:00:00':{}, '21:00:00':{}, '00:00:00':{}}
 
                         for pred in pred_weather['list']:
