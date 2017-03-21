@@ -79,7 +79,7 @@ def delete_weather(weather_id):
 
 @app.route(SERVICE_URL + '/prediction/sync/<country>/<city>', methods=['GET','POST','PUT','UPDATE','DELETE'])
 @crossdomain(fk=fk, app=app, origin='*')
-def sync_cover(country):
+def sync_cover(country, city):
     if fk.request.method == 'GET':
         pn = phonenumbers.parse(get_one_number(country), None)
         _country_object = pycountry.countries.get(alpha_2=region_code_for_number(pn))
