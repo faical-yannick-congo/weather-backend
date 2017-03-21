@@ -74,7 +74,7 @@ def get_one_number(country):
 def get_cities(country):
     r = requests.get('http://54.196.141.56:5300/sms/services/sso/v0.1/users/cities/{0}'.format(country))
     response = json.loads(r.text)
-    return [c['name'] for c in response['content']['cities']]
+    return [c['name'] for c in response['content']['cities']], response['content']['language']
 
 def get_weather(city, country):
     r = requests.get('http://api.openweathermap.org/data/2.5/forecast?q={0},{1}&appid=eb7cda08edf98390707005f5cbde3fe6'.format(city, country))

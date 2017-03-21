@@ -101,8 +101,9 @@ def sync_cover(country, city):
         country_code = str(pn.country_code)
 
         if city == 'all':
-            cities = get_cities(country)
+            cities, language = get_cities(country)
         else:
+            ignore, language = get_cities(country)
             cities = [city]
 
         if country_hour == 14: # We push the sync
@@ -125,6 +126,7 @@ def sync_cover(country, city):
                         for hour, val in predictions.items():
                             filterer = "{0} {1}".format(next_day, hour)
                             if pred["dt_txt"] == filterer:
+                                # Use the language here later to translate directly the news.
                                 predictions[hour]['climate'] = ', '.join([w["description"] for w in pred["weather"]])
                                 predictions[hour]['humidity'] = "{0}%".format(pred["main"]["humidity"])
                                 predictions[hour]['temp-min'] = "{0}C".format(pytemperature.k2c(pred["main"]["temp_min"]))
