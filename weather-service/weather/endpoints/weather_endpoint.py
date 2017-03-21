@@ -181,7 +181,7 @@ def weather_pushing_country(country, city):
         weather_pulled = Weather.objects(city=city, country=country, status='pulled', day=day).first()
 
         if weather_pulled:
-            weather_pulled.satus = 'pushing'
+            weather_pulled.status = 'pushing'
             weather_pulled.save()
             weather_pushing = weather_pulled.info()
             return service_response(200, 'Weather to send', weather_pushing)
