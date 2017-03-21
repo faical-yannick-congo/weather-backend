@@ -179,7 +179,7 @@ def pushed_weather(weather_id):
         if _weather:
             _weather.status = 'pushed'
             _weather.save()
-            return service_response(200, 'Weather pushed', 'Weather {0} was confimed pushed.'.format(news_id))
+            return service_response(200, 'Weather pushed', 'Weather {0} was confimed pushed.'.format(weather_id))
         else:
             return service_response(204, 'Unknown weather', 'No corresponding weather found.')
     else:
