@@ -105,7 +105,7 @@ def sync_cover(country, city):
         else:
             cities = [city]
 
-        if country_hour == 21: # We push the sync
+        if country_hour == 13: # We push the sync
             cities_to_sync = []
             for city in cities:
                 check_weather = Weather(country=country, city=city, day=next_day).first()
