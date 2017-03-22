@@ -108,6 +108,7 @@ def sync_cover(country, city):
             country_time = str(now_time).split(" ")[1].split("+")[0]
         country_hour = int(country_time.split(":")[0])
         country_code = str(pn.country_code)
+        _country_name_short = region_code_for_country_code(pn.country_code)
 
         if city == 'all':
             cities, language = get_cities(country)
@@ -125,7 +126,7 @@ def sync_cover(country, city):
                 return service_response(200, 'Weather synched already', 'The weather for country: {0} and city: {1} is already synched.'.format(country, city))
             unknown_cities = []
             for city in cities_to_sync:
-                pred_weather = get_weather(city, country_code)
+                pred_weather = get_weather(city, _country_name_short)
                 try:
                     if pred_weather['city']['name'] == city:
                         _weather = Weather(created_at=str(datetime.datetime.utcnow()), country=country, city=city, day=next_day)
@@ -155,7 +156,7 @@ def sync_cover(country, city):
             data['country'] = country_code
             translator = Translator(to_lang=language)
             data['message'] = translator.translate('Weather in () tomorrow:')
-            data['country_code'] = country_code
+            data['country_code'] = _country_name_short
             return service_response(200, 'Weather sync done.', data)
         else:
             return service_response(204, 'Weather not synched', 'It is not yet time to sync weather. country-time:{0}'.format(country_time))
