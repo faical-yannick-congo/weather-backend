@@ -24,6 +24,7 @@ from geopy import geocoders
 from tzwhere import tzwhere
 from pytz import timezone
 import pytemperature
+from translate import Translator
 
 @app.route(SERVICE_URL + '/menu', methods=['GET','POST','PUT','UPDATE','DELETE'])
 @crossdomain(fk=fk, app=app, origin='*')
