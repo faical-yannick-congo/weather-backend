@@ -172,6 +172,7 @@ def weather_pushing_country(country, city):
         timeZoneObj = timezone(timeZoneStr)
         now_time = datetime.datetime.now(timeZoneObj)
         day = str(now_time).split(" ")[0]
+        date = datetime.datetime.strptime(day, "%Y-%m-%d")
         next_date = date + datetime.timedelta(days=1)
         next_day = datetime.datetime.strftime(next_date, "%Y-%m-%d")
 
