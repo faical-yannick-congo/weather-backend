@@ -152,6 +152,8 @@ def sync_cover(country, city):
                     unknown_cities.append(city)
             data = {'unknown-cities':unknown_cities, 'country-cities':cities, 'cities-to-sync':cities_to_sync}
             data['country'] = country_code
+            translator = Translator(to_lang=language)
+            data['message'] = translator.translate('Your weather alter for tomorrow.')
             return service_response(200, 'Weather sync done.', data)
         else:
             return service_response(204, 'Weather not synched', 'It is not yet time to sync weather. country-time:{0}'.format(country_time))
