@@ -172,8 +172,10 @@ def weather_pushing_country(country, city):
         timeZoneObj = timezone(timeZoneStr)
         now_time = datetime.datetime.now(timeZoneObj)
         day = str(now_time).split(" ")[0]
+        next_date = date + datetime.timedelta(days=1)
+        next_day = datetime.datetime.strftime(next_date, "%Y-%m-%d")
 
-        weather_pulled = Weather.objects(city=city, country=country, status='pulled', day=day).first()
+        weather_pulled = Weather.objects(city=city, country=country, status='pulled', day=next_day).first()
 
         if weather_pulled:
             weather_pulled.status = 'pushing'
