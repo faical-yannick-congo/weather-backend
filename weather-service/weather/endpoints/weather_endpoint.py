@@ -44,8 +44,8 @@ def weather_by_city(country, city):
             else:
                 weathers = [c.info() for c in Weather.objects(country=country)]
         else:
-            weathers = [c.info() for c in Weather.objects(city=city, country=country)]
-        return service_response(200, 'City: {0} of Country: {1} weather history'.format(city, country), {'size':len(weathers), 'history':weathers})
+            weathers = [c.info() for c in Weather.objects(city=city.lower(), country=country)]
+        return service_response(200, 'City: {0} of Country: {1} weather history'.format(city.lower(), country), {'size':len(weathers), 'history':weathers})
     else:
         return service_response(405, 'Method not allowed', 'This endpoint supports only a GET method.')
 
@@ -73,8 +73,8 @@ def weather_today_city(country, city):
                 else:
                     weathers = [c.info() for c in Weather.objects(day=day, country=country)]
             else:
-                weathers = [c.info() for c in Weather.objects(day=day, city=city, country=country)]
-            return service_response(200, 'City: {0} of Country: {1} weather today: {2}'.format(city, country, day), {'size':len(weathers), 'today':weathers})
+                weathers = [c.info() for c in Weather.objects(day=day, city=city.lower(), country=country)]
+            return service_response(200, 'City: {0} of Country: {1} weather today: {2}'.format(city.lower(), country, day), {'size':len(weathers), 'today':weathers})
     else:
         return service_response(405, 'Method not allowed', 'This endpoint supports only a GET method.')
 
@@ -130,17 +130,17 @@ def sync_cover(country, city):
             if country_hour == 21: # We push the sync
                 cities_to_sync = []
                 for city in cities:
-                    check_weather = Weather.objects(country=country, city=city, day=next_day).first()
+                    check_weather = Weather.objects(country=country, city=city.lower(), day=next_day).first()
                     if check_weather is None:
-                        cities_to_sync.append(city)
+                        cities_to_sync.append(city.lower())
                 if len(cities_to_sync) == 0:
                     return service_response(204, 'Weather synched already', 'The weather for country: {0} and city: {1} is already synched.'.format(country, city))
                 unknown_cities = []
                 for city in cities_to_sync:
-                    pred_weather = get_weather(city, _country_name_short)
+                    pred_weather = get_weather(city.lower(), _country_name_short)
                     try:
-                        if pred_weather['city']['name'].lower()] == city:
-                            _weather = Weather(created_at=str(datetime.datetime.utcnow()), country=country, city=city, day=next_day)
+                        if pred_weather['city']['name'].lower() == city.lower():
+                            _weather = Weather(created_at=str(datetime.datetime.utcnow()), country=country, city=city.lower(), day=next_day)
                             predictions = {'03:00:00':{}, '06:00:00':{}, '09:00:00':{}, '12:00:00':{}, '15:00:00':{}, '18:00:00':{}, '21:00:00':{}, '00:00:00':{}}
 
                             for pred in pred_weather['list']:
@@ -160,9 +160,9 @@ def sync_cover(country, city):
                             _weather.predictions = predictions
                             _weather.save()
                         else:
-                            unknown_cities.append(city)
+                            unknown_cities.append(city.lower())
                     except:
-                        unknown_cities.append(city)
+                        unknown_cities.append(city.lower())
                 data = {'unknown-cities':unknown_cities, 'country-cities':cities, 'cities-to-sync':cities_to_sync}
                 data['country'] = country_code
                 translator = Translator(to_lang=language)
@@ -197,7 +197,7 @@ def weather_pushing_country(country, city):
             next_date = date + datetime.timedelta(days=1)
             next_day = datetime.datetime.strftime(next_date, "%Y-%m-%d")
 
-            weather_pulled = Weather.objects(city=city, country=country, status='pulled', day=next_day).first()
+            weather_pulled = Weather.objects(city=city.lower(), country=country, status='pulled', day=next_day).first()
 
             if weather_pulled:
                 weather_pulled.status = 'pushing'
