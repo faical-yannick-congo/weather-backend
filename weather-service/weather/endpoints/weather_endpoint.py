@@ -123,7 +123,7 @@ def sync_cover(country, city):
                 if check_weather is None:
                     cities_to_sync.append(city)
             if len(cities_to_sync) == 0:
-                return service_response(200, 'Weather synched already', 'The weather for country: {0} and city: {1} is already synched.'.format(country, city))
+                return service_response(204, 'Weather synched already', 'The weather for country: {0} and city: {1} is already synched.'.format(country, city))
             unknown_cities = []
             for city in cities_to_sync:
                 pred_weather = get_weather(city, _country_name_short)
