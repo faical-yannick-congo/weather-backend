@@ -187,7 +187,8 @@ def weather_pushing_country(country, city):
             weather_pulled.status = 'pushing'
             weather_pulled.save()
             weather_pushing = weather_pulled.info()
-            return service_response(200, 'Weather to send', weather_pushing)
+            translator = Translator(to_lang=language)
+            return service_response(200, translator.translate('Weather in () tomorrow:'), weather_pushing)
         else:
             return service_response(204, 'No weather to send', "no weather at this point.")
     else:
