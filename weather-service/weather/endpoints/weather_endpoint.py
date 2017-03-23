@@ -186,6 +186,7 @@ def weather_pushing_country(country, city):
         if weather_pulled:
             weather_pulled.status = 'pushing'
             weather_pulled.save()
+            ignore, language = get_cities(country)
             weather_pushing = weather_pulled.info()
             translator = Translator(to_lang=language)
             return service_response(200, translator.translate('Weather in () tomorrow:'), weather_pushing)
