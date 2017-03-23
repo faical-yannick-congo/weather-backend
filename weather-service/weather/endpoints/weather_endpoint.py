@@ -139,7 +139,7 @@ def sync_cover(country, city):
                 for city in cities_to_sync:
                     pred_weather = get_weather(city, _country_name_short)
                     try:
-                        if pred_weather['city']['name'] == city:
+                        if pred_weather['city']['name'].lower()] == city:
                             _weather = Weather(created_at=str(datetime.datetime.utcnow()), country=country, city=city, day=next_day)
                             predictions = {'03:00:00':{}, '06:00:00':{}, '09:00:00':{}, '12:00:00':{}, '15:00:00':{}, '18:00:00':{}, '21:00:00':{}, '00:00:00':{}}
 
