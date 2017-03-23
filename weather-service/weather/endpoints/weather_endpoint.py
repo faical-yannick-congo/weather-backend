@@ -116,7 +116,7 @@ def sync_cover(country, city):
             ignore, language = get_cities(country)
             cities = [city]
 
-        if country_hour == 3: # We push the sync
+        if country_hour == 4: # We push the sync
             cities_to_sync = []
             for city in cities:
                 check_weather = Weather.objects(country=country, city=city, day=next_day).first()
@@ -189,7 +189,7 @@ def weather_pushing_country(country, city):
             ignore, language = get_cities(country)
             weather_pushing = weather_pulled.info()
             translator = Translator(to_lang=language)
-            return service_response(200, translator.translate('Weather in () tomorrow:'), weather_pushing)
+            return service_response(200, translator.translate('Weather in () tomorrow {0}:'.format(next_day)), weather_pushing)
         else:
             return service_response(204, 'No weather to send', "no weather at this point.")
     else:
