@@ -138,20 +138,20 @@ def sync_cover(country, city):
                 unknown_cities = []
                 for city in cities_to_sync:
                     pred_weather = get_weather(city.lower(), _country_name_short)
-                    # try:
-                    if pred_weather['title'] == "":
-                        unknown_cities.append(city.lower())
-                    else:
-                        _weather = Weather(created_at=str(datetime.datetime.utcnow()), country=country, city=city.lower(), day=next_day)
-                        if language not in ['en', 'unknown']:
-                            translator = Translator(to_lang=language)
-                            _data = {'title':translator.translate(pred_weather['title'])}
-                            _data['day'] = translator.translate("During the day: {0}".format(pred_weather['day']))
-                            _data['night'] = translator.translate("During the night: {1}".format(pred_weather['night']))
-                            _weather.predictions = _data
+                    try:
+                        if pred_weather['title'] == "":
+                            unknown_cities.append(city.lower())
                         else:
-                            _weather.predictions = pred_weather
-                        _weather.save()
+                            _weather = Weather(created_at=str(datetime.datetime.utcnow()), country=country, city=city.lower(), day=next_day)
+                            if language not in ['en', 'unknown']:
+                                translator = Translator(to_lang=language)
+                                _data = {'title':translator.translate(pred_weather['title'])}
+                                _data['day'] = translator.translate("During the day: {0}".format(pred_weather['day']))
+                                _data['night'] = translator.translate("During the night: {0}".format(pred_weather['night']))
+                                _weather.predictions = _data
+                            else:
+                                _weather.predictions = pred_weather
+                            _weather.save()
 
                         # if pred_weather['city']['name'].lower() == city.lower():
                         #     _weather = Weather(created_at=str(datetime.datetime.utcnow()), country=country, city=city.lower(), day=next_day)
@@ -175,8 +175,8 @@ def sync_cover(country, city):
                         #     _weather.save()
                         # else:
                         #     unknown_cities.append(city.lower())
-                    # except:
-                    #     unknown_cities.append(city.lower())
+                    except:
+                        unknown_cities.append(city.lower())
                 data = {'unknown-cities':unknown_cities, 'country-cities':cities, 'cities-to-sync':cities_to_sync}
                 data['country'] = country_code
                 translator = Translator(to_lang=language)
