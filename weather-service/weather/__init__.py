@@ -1,4 +1,4 @@
-"""CoRR api module."""
+"""SMS Weather Service module."""
 import flask as fk
 from weatherdb.common.core import setup_app
 from weatherdb.common.models import Weather
@@ -56,23 +56,8 @@ def merge_dicts(*dict_args):
         result.update(dictionary)
     return result
 
-def menu(country=None):
-    if country in ["212"]:
-        return "Bienvenue dans le service de meteo. Nous vous remercions de nous avoir fait confiance dans la prestation de votre meteo quotidienne."
-    elif country in ["34"]:
-        return "Bienvenido al servicio de mensajeria. Gracias por confiar en nosotros en la entrega de sus noticias diarias."
-    elif country in ["33", "226", "227"]:
-        return "Bienvenue dans le service de meteo. Nous vous remercions de nous avoir fait confiance dans la prestation de votre meteo quotidienne."
-    else:
-        return "Welcome to the Weather Messaging Service. Thank you for trusting us in delivering your daily weather alerts."
-
-def get_country(country):
-    r = requests.get('http://54.196.141.56:5300/sms/services/sso/v0.1/users/countries')
-    response = json.loads(r.text)
-    for cnt in response['content']['countries']:
-        if int(cnt["code"]) == int(country):
-            return cnt
-    return None
+def menu():
+    return "Welcome to the Weather Messaging Service. Thank you for trusting us in delivering your daily weather alerts."
 
 def get_one_number(country):
     r = requests.get('http://54.196.141.56:5300/sms/services/sso/v0.1/users/country/{0}'.format(country))
@@ -82,12 +67,21 @@ def get_one_number(country):
 def get_cities(country):
     r = requests.get('http://54.196.141.56:5300/sms/services/sso/v0.1/users/cities/{0}'.format(country))
     response = json.loads(r.text)
-    return [c['name'] for c in response['content']['cities']]
+    return [c['name'] for c in response['content']['cities']], response['content']['language']
 
 def get_weather_old(city, country):
-    r = requests.get('http://54.196.141.56:5300/sms/services/sso/v0.1/users/cities/{0}'.format(country))
+    r = requests.get('http://api.openweathermap.org/data/2.5/forecast?q={0},{1}&appid=eb7cda08edf98390707005f5cbde3fe6'.format(city, country))
     response = json.loads(r.text)
-    return [c['name'] for c in response['content']['cities']]
+    return response
+
+def get_country(country):
+    r = requests.get('http://54.196.141.56:5300/sms/services/sso/v0.1/users/countries')
+    response = json.loads(r.text)
+    for cnt in response['content']['countries']:
+        if int(cnt["code"]) == int(country):
+            return cnt
+    return None
+
 
 def fetch_city(city, country):
     r = requests.get('http://autocomplete.wunderground.com/aq?query={0}&c={1}'.format(city, country))
