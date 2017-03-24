@@ -130,37 +130,51 @@ def sync_cover(country, city):
             if country_hour == 21: # We push the sync
                 cities_to_sync = []
                 for city in cities:
-                    check_weather = Weather.objects(country=country, city=city.lower(), day=next_day).first()
+                    check_weather = Weather.objects(country=country, city=city.lower().replace(" ", "-"), day=next_day).first()
                     if check_weather is None:
-                        cities_to_sync.append(city.lower())
+                        cities_to_sync.append(city.lower().replace(" ", "-"))
                 if len(cities_to_sync) == 0:
                     return service_response(204, 'Weather synched already', 'The weather for country: {0} and city: {1} is already synched.'.format(country, city))
                 unknown_cities = []
                 for city in cities_to_sync:
                     pred_weather = get_weather(city.lower(), _country_name_short)
                     try:
-                        if pred_weather['city']['name'].lower() == city.lower():
-                            _weather = Weather(created_at=str(datetime.datetime.utcnow()), country=country, city=city.lower(), day=next_day)
-                            predictions = {'03:00:00':{}, '06:00:00':{}, '09:00:00':{}, '12:00:00':{}, '15:00:00':{}, '18:00:00':{}, '21:00:00':{}, '00:00:00':{}}
-
-                            for pred in pred_weather['list']:
-                                for hour, val in predictions.items():
-                                    filterer = "{0} {1}".format(next_day, hour)
-                                    if pred["dt_txt"] == filterer:
-                                        clim_content = ', '.join([w["description"] for w in pred["weather"]])
-                                        if language not in ['en', 'unknown']:
-                                            translator = Translator(to_lang=language)
-                                            clim_content = translator.translate(clim_content)
-                                        # Use the language here later to translate directly the news.
-                                        predictions[hour]['climate'] = clim_content
-                                        predictions[hour]['humidity'] = "{0} %".format(pred["main"]["humidity"])
-                                        predictions[hour]['temp-min'] = "{0} C".format(str(pytemperature.k2c(pred["main"]["temp_min"])).split('.')[0])
-                                        predictions[hour]['temp-max'] = "{0} C".format(str(pytemperature.k2c(pred["main"]["temp_max"])).split('.')[0])
-                                        break
-                            _weather.predictions = predictions
-                            _weather.save()
-                        else:
+                        if pred_weather['title'] == "":
                             unknown_cities.append(city.lower())
+                        else:
+                            _weather = Weather(created_at=str(datetime.datetime.utcnow()), country=country, city=city.lower(), day=next_day)
+                            if language not in ['en', 'unknown']:
+                                translator = Translator(to_lang=language)
+                                _data = {'title':translator.translate(pred_weather['title'])}
+                                _data['day'] = translator.translate("During the day: {0}".format(pred_weather['day']))
+                                _data['night'] = translator.translate("During the night: {1}".format(pred_weather['night']))
+                                _weather.predictions = _data
+                            else:
+                                _weather.predictions = pred_weather
+                            _weather.save()
+
+                        # if pred_weather['city']['name'].lower() == city.lower():
+                        #     _weather = Weather(created_at=str(datetime.datetime.utcnow()), country=country, city=city.lower(), day=next_day)
+                        #     predictions = {'03:00:00':{}, '06:00:00':{}, '09:00:00':{}, '12:00:00':{}, '15:00:00':{}, '18:00:00':{}, '21:00:00':{}, '00:00:00':{}}
+                        #
+                        #     for pred in pred_weather['list']:
+                        #         for hour, val in predictions.items():
+                        #             filterer = "{0} {1}".format(next_day, hour)
+                        #             if pred["dt_txt"] == filterer:
+                        #                 clim_content = ', '.join([w["description"] for w in pred["weather"]])
+                        #                 if language not in ['en', 'unknown']:
+                        #                     translator = Translator(to_lang=language)
+                        #                     clim_content = translator.translate(clim_content)
+                        #                 # Use the language here later to translate directly the news.
+                        #                 predictions[hour]['climate'] = clim_content
+                        #                 predictions[hour]['humidity'] = "{0} %".format(pred["main"]["humidity"])
+                        #                 predictions[hour]['temp-min'] = "{0} C".format(str(pytemperature.k2c(pred["main"]["temp_min"])).split('.')[0])
+                        #                 predictions[hour]['temp-max'] = "{0} C".format(str(pytemperature.k2c(pred["main"]["temp_max"])).split('.')[0])
+                        #                 break
+                        #     _weather.predictions = predictions
+                        #     _weather.save()
+                        # else:
+                        #     unknown_cities.append(city.lower())
                     except:
                         unknown_cities.append(city.lower())
                 data = {'unknown-cities':unknown_cities, 'country-cities':cities, 'cities-to-sync':cities_to_sync}
