@@ -56,7 +56,7 @@ def merge_dicts(*dict_args):
         result.update(dictionary)
     return result
 
-def smartWelcome(country=None):
+def menu(country=None):
     if country in ["212"]:
         return "Bienvenue dans le service de meteo. Nous vous remercions de nous avoir fait confiance dans la prestation de votre meteo quotidienne."
     elif country in ["34"]:
