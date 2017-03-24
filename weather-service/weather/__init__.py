@@ -66,6 +66,14 @@ def smartWelcome(country=None):
     else:
         return "Welcome to the Weather Messaging Service. Thank you for trusting us in delivering your daily weather alerts."
 
+def get_country(country):
+    r = requests.get('http://54.196.141.56:5300/sms/services/sso/v0.1/users/countries')
+    response = json.loads(r.text)
+    for cnt in response['content']['countries']:
+        if int(cnt["code"]) == int(country):
+            return cnt
+    return None
+
 def get_one_number(country):
     r = requests.get('http://54.196.141.56:5300/sms/services/sso/v0.1/users/country/{0}'.format(country))
     response = json.loads(r.text)
