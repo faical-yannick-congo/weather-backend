@@ -127,7 +127,7 @@ def sync_cover(country, city):
                 ignore, language = get_cities(country)
                 cities = [city]
 
-            if country_hour == 19: # We push the sync
+            if country_hour == 21: # We push the sync
                 cities_to_sync = []
                 for city in cities:
                     check_weather = Weather.objects(country=country, city=city.lower().replace(" ", "-"), day=next_day).first()
@@ -151,6 +151,10 @@ def sync_cover(country, city):
                                 _weather.predictions = _data
                             else:
                                 _weather.predictions = pred_weather
+                                _data = {'title':pred_weather['title']}
+                                _data['day'] = "During the day: {0}".format(pred_weather['day'])
+                                _data['night'] = "During the night: {0}".format(pred_weather['night'])
+                                _weather.predictions = _data
                             _weather.save()
 
                         # if pred_weather['city']['name'].lower() == city.lower():
